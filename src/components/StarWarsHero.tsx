@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { rulesData } from "@/data/rulesData"
 
 interface StarWarsHeroProps {
@@ -82,6 +82,17 @@ function RepublicCrest({ size = 28 }: { size?: number }) {
 export default function StarWarsHero({ onEnter, onNavigate }: StarWarsHeroProps) {
   const [hoveredNav, setHoveredNav] = useState<string | null>(null)
   const [hoveredSub, setHoveredSub] = useState<string | null>(null)
+
+  const stars = useMemo(() => Array.from({ length: 80 }).map((_, i) => ({
+    id: i,
+    width: Math.random() * 2 + 1,
+    top: Math.random() * 100,
+    left: Math.random() * 100,
+    opacity: Math.random() * 0.7 + 0.1,
+    duration: Math.random() * 3 + 2,
+    delay: Math.random() * 3,
+  })), [])
+
   return (
     <div className="min-h-screen bg-gray-950 text-white overflow-hidden">
       {/* Star field background */}
@@ -94,18 +105,18 @@ export default function StarWarsHero({ onEnter, onNavigate }: StarWarsHeroProps)
           }}
         />
         <div className="absolute inset-0 overflow-hidden">
-          {Array.from({ length: 80 }).map((_, i) => (
+          {stars.map((s) => (
             <div
-              key={i}
+              key={s.id}
               className="absolute rounded-full bg-white"
               style={{
-                width: Math.random() * 2 + 1 + "px",
-                height: Math.random() * 2 + 1 + "px",
-                top: Math.random() * 100 + "%",
-                left: Math.random() * 100 + "%",
-                opacity: Math.random() * 0.7 + 0.1,
-                animation: `pulse ${Math.random() * 3 + 2}s ease-in-out infinite`,
-                animationDelay: Math.random() * 3 + "s",
+                width: s.width + "px",
+                height: s.width + "px",
+                top: s.top + "%",
+                left: s.left + "%",
+                opacity: s.opacity,
+                animation: `pulse ${s.duration}s ease-in-out infinite`,
+                animationDelay: s.delay + "s",
               }}
             />
           ))}
