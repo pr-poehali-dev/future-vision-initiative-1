@@ -207,7 +207,7 @@ export default function StarWarsHero({ onEnter }: StarWarsHeroProps) {
 
       {/* Watermark */}
       <div className="absolute bottom-4 left-0 right-0 flex justify-center px-4 z-10">
-        <p className="text-center text-xs text-white/20 tracking-wide max-w-lg">
+        <p className="text-center text-xs tracking-wide max-w-lg text-slate-50">
           Данная информация, предоставленная на сайте, является собственностью Sunrise Team. Копирование любых данных строго запрещено.
         </p>
       </div>
