@@ -2,7 +2,16 @@ import { motion } from "framer-motion"
 
 interface StarWarsHeroProps {
   onEnter: () => void
+  onNavigate: (pageId: string) => void
 }
+
+const navItems = [
+  { label: "Дополнительно",  id: "additional" },
+  { label: "Формирования",   id: "formations" },
+  { label: "Должности",      id: "positions"  },
+  { label: "Основной Устав", id: "charter"    },
+  { label: "Главная",        id: "__home"     },
+]
 
 function toRad(d: number) { return (d * Math.PI) / 180 }
 function pt(cx: number, cy: number, r: number, deg: number) {
@@ -66,7 +75,7 @@ function RepublicCrest({ size = 28 }: { size?: number }) {
 }
 
 
-export default function StarWarsHero({ onEnter }: StarWarsHeroProps) {
+export default function StarWarsHero({ onEnter, onNavigate }: StarWarsHeroProps) {
   return (
     <div className="min-h-screen bg-gray-950 text-white overflow-hidden">
       {/* Star field background */}
@@ -96,6 +105,54 @@ export default function StarWarsHero({ onEnter }: StarWarsHeroProps) {
           ))}
         </div>
       </div>
+
+      {/* Right vertical navigation */}
+      <motion.nav
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
+        className="fixed right-0 top-0 h-full z-20 flex flex-col items-end justify-center pr-5 gap-0 pointer-events-none"
+      >
+        {navItems.map((item, i) => (
+          <button
+            key={item.id}
+            onClick={() => item.id === "__home" ? window.scrollTo({ top: 0 }) : onNavigate(item.id)}
+            className="pointer-events-auto flex items-center gap-3 group py-2"
+          >
+            <span
+              className="text-xs font-bold tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap"
+              style={{ color: "#00cccc" }}
+            >
+              {item.label}
+            </span>
+            <div className="flex flex-col items-center">
+              <div
+                className="w-px transition-all duration-300 group-hover:opacity-100"
+                style={{
+                  height: i === 0 ? "0px" : "18px",
+                  backgroundColor: "#00cccc44",
+                }}
+              />
+              <div
+                className="rounded-full transition-all duration-200 group-hover:scale-150"
+                style={{
+                  width: i === 0 ? "10px" : "7px",
+                  height: i === 0 ? "10px" : "7px",
+                  backgroundColor: i === 0 ? "#00cccc" : "#00cccc66",
+                  boxShadow: i === 0 ? "0 0 8px #00cccc" : "none",
+                }}
+              />
+              <div
+                className="w-px"
+                style={{
+                  height: "18px",
+                  backgroundColor: "#00cccc44",
+                }}
+              />
+            </div>
+          </button>
+        ))}
+      </motion.nav>
 
       {/* Hero content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6" style={{ marginTop: "-160px" }}>

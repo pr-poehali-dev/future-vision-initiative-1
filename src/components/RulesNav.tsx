@@ -8,9 +8,10 @@ interface RulesNavProps {
   activePage: string
   activeSubpage: string | null
   onNavigate: (pageId: string, subpageId?: string) => void
+  onHome?: () => void
 }
 
-export default function RulesNav({ activePage, activeSubpage, onNavigate }: RulesNavProps) {
+export default function RulesNav({ activePage, activeSubpage, onNavigate, onHome }: RulesNavProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({})
 
@@ -29,7 +30,7 @@ export default function RulesNav({ activePage, activeSubpage, onNavigate }: Rule
         {/* Logo */}
         <div
           className="flex items-center gap-2 cursor-pointer"
-          onClick={() => handleNavigate("general")}
+          onClick={() => onHome ? onHome() : handleNavigate("charter")}
         >
           <span className="text-yellow-400 font-black text-lg tracking-widest uppercase">
             ⚔ СВОД ПРАВИЛ

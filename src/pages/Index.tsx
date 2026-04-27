@@ -23,7 +23,7 @@ export default function Index() {
 
   // Landing page (before entering rules)
   if (!activePage) {
-    return <StarWarsHero onEnter={handleEnter} />
+    return <StarWarsHero onEnter={handleEnter} onNavigate={handleNavigate} />
   }
 
   // Rules pages
@@ -33,6 +33,7 @@ export default function Index() {
         activePage={activePage}
         activeSubpage={activeSubpage}
         onNavigate={handleNavigate}
+        onHome={() => { setActivePage(null); setActiveSubpage(null) }}
       />
       <div className="container mx-auto px-4 md:px-8 pt-24 pb-20 max-w-4xl">
         <RulesContent
