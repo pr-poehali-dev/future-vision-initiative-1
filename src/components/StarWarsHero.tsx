@@ -106,53 +106,41 @@ export default function StarWarsHero({ onEnter, onNavigate }: StarWarsHeroProps)
         </div>
       </div>
 
-      {/* Right vertical navigation */}
-      <motion.nav
-        initial={{ opacity: 0, x: 30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
-        className="fixed right-0 top-0 h-full z-20 flex flex-col items-end justify-center pr-5 gap-0 pointer-events-none"
-      >
-        {navItems.map((item, i) => (
-          <button
-            key={item.id}
-            onClick={() => item.id === "__home" ? window.scrollTo({ top: 0 }) : onNavigate(item.id)}
-            className="pointer-events-auto flex items-center gap-3 group py-2"
-          >
-            <span
-              className="text-xs font-bold tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap"
-              style={{ color: "#00cccc" }}
+      {/* Right corner navigation — items radiate from top-right to center */}
+      <div className="fixed top-0 right-0 z-20 pointer-events-none">
+        {navItems.map((item, i) => {
+          // Каждый следующий пункт сдвигается левее и ниже — от угла к центру
+          const offsetX = i * 110  // насколько левее от правого края
+          const offsetY = i * 52   // насколько ниже от верхнего края
+          return (
+            <motion.button
+              key={item.id}
+              initial={{ opacity: 0, x: 40, y: -20 }}
+              animate={{ opacity: 1, x: 0, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
+              onClick={() => item.id === "__home" ? window.scrollTo({ top: 0 }) : onNavigate(item.id)}
+              className="pointer-events-auto absolute flex items-center gap-2 group"
+              style={{ right: `${offsetX + 16}px`, top: `${offsetY + 16}px` }}
             >
-              {item.label}
-            </span>
-            <div className="flex flex-col items-center">
+              {/* Dot */}
               <div
-                className="w-px transition-all duration-300 group-hover:opacity-100"
+                className="w-1.5 h-1.5 rounded-full flex-shrink-0 transition-all duration-200 group-hover:scale-150"
                 style={{
-                  height: i === 0 ? "0px" : "18px",
-                  backgroundColor: "#00cccc44",
+                  backgroundColor: i === 0 ? "#00cccc" : "#00cccc88",
+                  boxShadow: i === 0 ? "0 0 6px #00cccc" : "none",
                 }}
               />
-              <div
-                className="rounded-full transition-all duration-200 group-hover:scale-150"
-                style={{
-                  width: i === 0 ? "10px" : "7px",
-                  height: i === 0 ? "10px" : "7px",
-                  backgroundColor: i === 0 ? "#00cccc" : "#00cccc66",
-                  boxShadow: i === 0 ? "0 0 8px #00cccc" : "none",
-                }}
-              />
-              <div
-                className="w-px"
-                style={{
-                  height: "18px",
-                  backgroundColor: "#00cccc44",
-                }}
-              />
-            </div>
-          </button>
-        ))}
-      </motion.nav>
+              {/* Label */}
+              <span
+                className="text-xs font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-200 group-hover:opacity-100"
+                style={{ color: "#00cccc", opacity: 0.55 + i * 0.1 }}
+              >
+                {item.label}
+              </span>
+            </motion.button>
+          )
+        })}
+      </div>
 
       {/* Hero content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6" style={{ marginTop: "-160px" }}>
