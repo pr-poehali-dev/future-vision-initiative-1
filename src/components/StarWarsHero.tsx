@@ -112,24 +112,22 @@ export default function StarWarsHero({ onEnter, onNavigate }: StarWarsHeroProps)
         </div>
       </div>
 
-      {/* Top navigation — items go from top-right corner toward center-top */}
-      <div className="fixed top-0 left-0 right-0 z-30 flex justify-center pointer-events-none">
-        <div className="flex items-start pointer-events-auto" style={{ marginTop: "0px" }}>
-          {topNavIds.map((id, i) => {
+      {/* Top-right navigation */}
+      <div className="fixed top-0 right-0 z-30 flex items-start pointer-events-none">
+        <div className="flex items-start pointer-events-auto">
+          {/* Порядок: Главная левее всех, Дополнительно — крайний правый */}
+          {[...topNavIds].reverse().map((id, i) => {
             const label = topNavLabels[id]
             const page = rulesData.find(p => p.id === id)
             const subpages = page?.subpages ?? []
-            // Смещение по X: самый правый (i=0) — крайний правый, последний — ближе к центру
-            // Порядок отображения: справа налево, но в DOM слева направо → реверс
-            const reversedI = topNavIds.length - 1 - i
             const isHovered = hoveredNav === id
 
             return (
               <motion.div
                 key={id}
-                initial={{ opacity: 0, y: -20 }}
+                initial={{ opacity: 0, y: -16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.2 + reversedI * 0.08 }}
+                transition={{ duration: 0.4, delay: 0.1 + i * 0.07 }}
                 className="relative"
                 onMouseEnter={() => setHoveredNav(id)}
                 onMouseLeave={() => { setHoveredNav(null); setHoveredSub(null) }}
@@ -137,36 +135,35 @@ export default function StarWarsHero({ onEnter, onNavigate }: StarWarsHeroProps)
                 {/* Nav button */}
                 <button
                   onClick={() => id === "__home" ? window.scrollTo({ top: 0 }) : onNavigate(id)}
-                  className="relative flex flex-col items-center px-5 pt-4 pb-3 group"
+                  className="relative flex flex-col items-center px-4 pt-4 pb-2"
                 >
                   <span
                     className="text-xs font-bold tracking-widest uppercase whitespace-nowrap transition-colors duration-200"
-                    style={{ color: isHovered ? "#00cccc" : "#00cccc99" }}
+                    style={{ color: isHovered ? "#00cccc" : "#00cccc88" }}
                   >
                     {label}
                   </span>
-                  {/* Underline that wraps around on hover */}
                   <span
-                    className="block mt-1.5 transition-all duration-300 rounded-sm"
+                    className="block mt-1.5 rounded-sm transition-all duration-300"
                     style={{
                       height: "2px",
                       backgroundColor: "#00cccc",
-                      width: isHovered ? "100%" : "30%",
+                      width: isHovered ? "100%" : "24px",
                       boxShadow: isHovered ? "0 0 8px #00cccc88" : "none",
                     }}
                   />
                 </button>
 
-                {/* Dropdown subpages */}
+                {/* Dropdown — открывается вниз, прибит к правому краю если крайний */}
                 <AnimatePresence>
                   {isHovered && subpages.length > 0 && (
                     <motion.div
-                      initial={{ opacity: 0, y: -8 }}
+                      initial={{ opacity: 0, y: -6 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -8 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-0 min-w-max"
-                      style={{ background: "rgba(5,10,20,0.97)", border: "1px solid #00cccc22", borderRadius: "6px" }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute top-full right-0 min-w-max"
+                      style={{ background: "rgba(4,8,18,0.98)", border: "1px solid #00cccc22", borderRadius: "6px" }}
                     >
                       {subpages.map((sub) => {
                         const hasSubs = sub.subpages && sub.subpages.length > 0
@@ -181,28 +178,29 @@ export default function StarWarsHero({ onEnter, onNavigate }: StarWarsHeroProps)
                             <button
                               onClick={() => onNavigate(id, sub.id)}
                               className="w-full text-left flex items-center justify-between gap-6 px-5 py-2.5 text-xs font-bold tracking-widest uppercase whitespace-nowrap transition-colors duration-150"
-                              style={{ color: isSubHovered ? "#00cccc" : "#00cccc88" }}
+                              style={{ color: isSubHovered ? "#00cccc" : "#00cccc77" }}
                             >
                               {sub.title}
                               {hasSubs && <span style={{ color: "#00cccc44" }}>▸</span>}
                             </button>
-                            {/* Sub-subpages */}
                             <AnimatePresence>
                               {hasSubs && isSubHovered && (
                                 <motion.div
-                                  initial={{ opacity: 0, x: -8 }}
+                                  initial={{ opacity: 0, x: 6 }}
                                   animate={{ opacity: 1, x: 0 }}
-                                  exit={{ opacity: 0, x: -8 }}
-                                  transition={{ duration: 0.15 }}
-                                  className="absolute right-full top-0 mr-0 min-w-max"
-                                  style={{ background: "rgba(5,10,20,0.97)", border: "1px solid #00cccc22", borderRadius: "6px" }}
+                                  exit={{ opacity: 0, x: 6 }}
+                                  transition={{ duration: 0.12 }}
+                                  className="absolute right-full top-0 min-w-max"
+                                  style={{ background: "rgba(4,8,18,0.98)", border: "1px solid #00cccc22", borderRadius: "6px" }}
                                 >
                                   {sub.subpages!.map((ssub) => (
                                     <button
                                       key={ssub.id}
                                       onClick={() => onNavigate(id, ssub.id)}
-                                      className="w-full text-left px-5 py-2.5 text-xs font-bold tracking-widest uppercase whitespace-nowrap transition-colors duration-150 hover:text-[#00cccc]"
-                                      style={{ color: "#00cccc88" }}
+                                      className="w-full text-left px-5 py-2.5 text-xs font-bold tracking-widest uppercase whitespace-nowrap transition-colors duration-150"
+                                      style={{ color: "#00cccc77" }}
+                                      onMouseEnter={e => (e.currentTarget.style.color = "#00cccc")}
+                                      onMouseLeave={e => (e.currentTarget.style.color = "#00cccc77")}
                                     >
                                       {ssub.title}
                                     </button>
