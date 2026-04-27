@@ -4,76 +4,65 @@ interface StarWarsHeroProps {
   onEnter: () => void
 }
 
-// Знак Галактической Республики (точный символ)
+function toRad(d: number) { return (d * Math.PI) / 180 }
+function pt(cx: number, cy: number, r: number, deg: number) {
+  return { x: cx + r * Math.cos(toRad(deg)), y: cy + r * Math.sin(toRad(deg)) }
+}
+
+// Знак Галактической Республики — точно по оригиналу
+// Структура: сплошное внешнее кольцо + 9 сегментов-дуг внутри него + 9 спиц + заполненный центр
 function RepublicCrest({ size = 28 }: { size?: number }) {
   const C = "#00cccc"
-  // Параметры
   const cx = 50, cy = 50
-  const rOuter = 47   // внешнее кольцо
-  const rInner = 34   // внутреннее кольцо (граница сегментов)
-  const rHub = 12     // центральная втулка
-  const spokeW = 6    // ширина спицы (strokeWidth)
-  const segCount = 9  // количество сегментов во внешнем кольце
-  const segGap = 14   // угол зазора между сегментами в градусах
+  const rOut = 47    // внешний радиус кольца
+  const rRing = 38   // внутренний радиус кольца (граница сегментов снаружи)
+  const rSeg = 29    // внутренний радиус сегментов (граница спиц)
+  const rHub = 13    // радиус центра
+  const N = 9        // количество сегментов/спиц
+  const gapDeg = 9   // зазор между сегментами в градусах
+  const ringW = rOut - rRing  // толщина кольца
 
-  // Сегменты внешнего кольца: 9 штук с зазорами
-  const segAngle = 360 / segCount
-  const segments = Array.from({ length: segCount }).map((_, i) => {
-    const startDeg = i * segAngle + segGap / 2 - 90
-    const endDeg = (i + 1) * segAngle - segGap / 2 - 90
-    const startRad = (startDeg * Math.PI) / 180
-    const endRad = (endDeg * Math.PI) / 180
-    const rMid = (rOuter + rInner) / 2
-    const thickness = (rOuter - rInner) / 2
+  const segAngle = 360 / N
+
+  // 9 сегментов — заполненные дуги между rRing и rSeg
+  const segments = Array.from({ length: N }).map((_, i) => {
+    const s = i * segAngle - 90 + gapDeg / 2
+    const e = (i + 1) * segAngle - 90 - gapDeg / 2
+    const p1 = pt(cx, cy, rRing, s)
+    const p2 = pt(cx, cy, rRing, e)
+    const p3 = pt(cx, cy, rSeg, e)
+    const p4 = pt(cx, cy, rSeg, s)
     return (
       <path
         key={i}
-        d={describeArc(cx, cy, rMid, startDeg, endDeg)}
-        stroke={C}
-        strokeWidth={thickness * 2}
-        fill="none"
-        strokeLinecap="butt"
+        d={`M ${p1.x} ${p1.y} A ${rRing} ${rRing} 0 0 1 ${p2.x} ${p2.y} L ${p3.x} ${p3.y} A ${rSeg} ${rSeg} 0 0 0 ${p4.x} ${p4.y} Z`}
+        fill={C}
       />
     )
   })
 
-  // 9 спиц от втулки до внутреннего кольца
-  const spokes = Array.from({ length: segCount }).map((_, i) => {
-    const angleDeg = i * segAngle - 90
-    const rad = (angleDeg * Math.PI) / 180
-    const x1 = cx + rHub * Math.cos(rad)
-    const y1 = cy + rHub * Math.sin(rad)
-    const x2 = cx + rInner * Math.cos(rad)
-    const y2 = cy + rInner * Math.sin(rad)
+  // 9 спиц — от центра до rSeg, с зазором у хаба
+  const spokes = Array.from({ length: N }).map((_, i) => {
+    const deg = i * segAngle - 90
+    const p1 = pt(cx, cy, rHub + 1, deg)
+    const p2 = pt(cx, cy, rSeg, deg)
     return (
-      <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={C} strokeWidth={spokeW} strokeLinecap="round" />
+      <line key={i} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={C} strokeWidth={5} strokeLinecap="butt" />
     )
   })
 
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Outer circle */}
-      <circle cx={cx} cy={cy} r={rOuter} stroke={C} strokeWidth="3" fill="none" />
-      {/* Inner circle */}
-      <circle cx={cx} cy={cy} r={rInner} stroke={C} strokeWidth="2" fill="none" />
-      {/* Segments */}
+      {/* Сплошное внешнее кольцо */}
+      <circle cx={cx} cy={cy} r={rOut - ringW / 2} stroke={C} strokeWidth={ringW} fill="none" />
+      {/* Сегменты */}
       {segments}
-      {/* Spokes */}
+      {/* Спицы */}
       {spokes}
-      {/* Center hub */}
+      {/* Центральный заполненный круг */}
       <circle cx={cx} cy={cy} r={rHub} fill={C} />
     </svg>
   )
-}
-
-function describeArc(cx: number, cy: number, r: number, startDeg: number, endDeg: number) {
-  const toRad = (d: number) => (d * Math.PI) / 180
-  const x1 = cx + r * Math.cos(toRad(startDeg))
-  const y1 = cy + r * Math.sin(toRad(startDeg))
-  const x2 = cx + r * Math.cos(toRad(endDeg))
-  const y2 = cy + r * Math.sin(toRad(endDeg))
-  const large = endDeg - startDeg > 180 ? 1 : 0
-  return `M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2}`
 }
 
 
@@ -153,7 +142,7 @@ export default function StarWarsHero({ onEnter }: StarWarsHeroProps) {
           transition={{ duration: 0.7, delay: 0.7 }}
           className="flex flex-col items-center gap-4 mt-14 w-full max-w-xs"
         >
-          <p className="text-sm tracking-widest uppercase font-semibold mb-2" style={{ color: "#00cccc88" }}>
+          <p className="text-2xl md:text-3xl font-black tracking-widest uppercase mb-2 text-white">
             Дополнительные Ссылки
           </p>
 
