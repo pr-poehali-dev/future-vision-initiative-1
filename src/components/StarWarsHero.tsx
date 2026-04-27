@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion"
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import { rulesData } from "@/data/rulesData"
+import StarBackground from "@/components/StarBackground"
 
 interface StarWarsHeroProps {
   onEnter: () => void
@@ -83,45 +84,11 @@ export default function StarWarsHero({ onEnter, onNavigate }: StarWarsHeroProps)
   const [hoveredNav, setHoveredNav] = useState<string | null>(null)
   const [hoveredSub, setHoveredSub] = useState<string | null>(null)
 
-  const stars = useMemo(() => Array.from({ length: 80 }).map((_, i) => ({
-    id: i,
-    width: Math.random() * 2 + 1,
-    top: Math.random() * 100,
-    left: Math.random() * 100,
-    opacity: Math.random() * 0.7 + 0.1,
-    duration: Math.random() * 3 + 2,
-    delay: Math.random() * 3,
-  })), [])
+
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white overflow-hidden">
-      {/* Star field background */}
-      <div className="fixed inset-0 z-0">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "radial-gradient(ellipse at center, #0a0a1a 0%, #000000 100%)",
-          }}
-        />
-        <div className="absolute inset-0 overflow-hidden">
-          {stars.map((s) => (
-            <div
-              key={s.id}
-              className="absolute rounded-full bg-white"
-              style={{
-                width: s.width + "px",
-                height: s.width + "px",
-                top: s.top + "%",
-                left: s.left + "%",
-                opacity: s.opacity,
-                animation: `pulse ${s.duration}s ease-in-out infinite`,
-                animationDelay: s.delay + "s",
-              }}
-            />
-          ))}
-        </div>
-      </div>
+    <div className="min-h-screen bg-black text-white overflow-hidden">
+      <StarBackground />
 
       {/* Top-right navigation */}
       <div className="fixed top-0 right-0 z-30 flex items-start pointer-events-none">
