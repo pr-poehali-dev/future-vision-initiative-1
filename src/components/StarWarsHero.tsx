@@ -6,9 +6,6 @@ interface StarWarsHeroProps {
   onEnter: () => void
 }
 
-const missionText =
-  "Галактика полна опасностей, интриг и возможностей. Этот Свод Правил — основа нашего ролевого сервера. Он хранит законы, по которым живут Джедаи, Ситхи, солдаты Империи и бойцы Повстанцев. Каждый, кто ступает на эту землю, обязан знать правила игры. Здесь нет случайных смертей. Здесь нет хаоса без причины. Только честная ролевая игра, взаимное уважение и преданность нашей Галактике. Да пребудет с тобой Сила."
-
 export default function StarWarsHero({ onEnter }: StarWarsHeroProps) {
   return (
     <div className="min-h-screen bg-gray-950 text-white overflow-hidden">
@@ -21,7 +18,6 @@ export default function StarWarsHero({ onEnter }: StarWarsHeroProps) {
               "radial-gradient(ellipse at center, #0a0a1a 0%, #000000 100%)",
           }}
         />
-        {/* Stars */}
         <div className="absolute inset-0 overflow-hidden">
           {Array.from({ length: 80 }).map((_, i) => (
             <div
@@ -42,13 +38,14 @@ export default function StarWarsHero({ onEnter }: StarWarsHeroProps) {
       </div>
 
       {/* Hero content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 pt-12 pb-20">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6">
         {/* Decorative line */}
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="h-px w-32 bg-yellow-400/60 mb-8"
+          className="h-px w-32 mb-8"
+          style={{ backgroundColor: "#c8e6c9" }}
         />
 
         {/* Server subtitle */}
@@ -56,9 +53,10 @@ export default function StarWarsHero({ onEnter }: StarWarsHeroProps) {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-yellow-400 text-sm tracking-widest uppercase font-semibold mb-6"
+          className="text-sm tracking-widest uppercase font-semibold mb-6"
+          style={{ color: "#c8e6c9" }}
         >
-          Ролевой сервер · Star Wars Universe
+          Sunrise of the Republic
         </motion.p>
 
         {/* Main title */}
@@ -87,27 +85,11 @@ export default function StarWarsHero({ onEnter }: StarWarsHeroProps) {
           <div className="h-px w-16 bg-gradient-to-l from-transparent to-red-500" />
         </motion.div>
 
-        {/* Mission text with gradient scroll effect */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="max-w-3xl text-center mb-12"
-        >
-          <TextGradientScroll
-            text={missionText}
-            className="text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-gray-300"
-            type="word"
-            textOpacity="soft"
-          />
-        </motion.div>
-
         {/* CTA Button */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 1 }}
-          className="flex flex-col items-center gap-4"
+          transition={{ duration: 0.5, delay: 0.8 }}
         >
           <LiquidButton
             size="xxl"
@@ -116,9 +98,6 @@ export default function StarWarsHero({ onEnter }: StarWarsHeroProps) {
           >
             Читать Свод Правил
           </LiquidButton>
-          <p className="text-xs text-gray-500 tracking-wide">
-            Незнание правил не освобождает от ответственности
-          </p>
         </motion.div>
 
         {/* Bottom decorative line */}
@@ -126,24 +105,9 @@ export default function StarWarsHero({ onEnter }: StarWarsHeroProps) {
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ duration: 1, delay: 0.9, ease: "easeOut" }}
-          className="h-px w-32 bg-yellow-400/60 mt-16"
+          className="h-px w-32 mt-16"
+          style={{ backgroundColor: "#c8e6c9" }}
         />
-
-        {/* Faction icons */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-          className="flex gap-8 mt-8 text-xs text-gray-600 tracking-widest uppercase font-semibold"
-        >
-          <span className="hover:text-blue-400 transition-colors cursor-default">Республика</span>
-          <span className="text-gray-700">·</span>
-          <span className="hover:text-gray-300 transition-colors cursor-default">Империя</span>
-          <span className="text-gray-700">·</span>
-          <span className="hover:text-orange-400 transition-colors cursor-default">Повстанцы</span>
-          <span className="text-gray-700">·</span>
-          <span className="hover:text-yellow-400 transition-colors cursor-default">Ситхи</span>
-        </motion.div>
       </div>
     </div>
   )
