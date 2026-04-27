@@ -1,6 +1,4 @@
 import { useState } from "react"
-import { TextGradientScroll } from "@/components/ui/text-gradient-scroll"
-import { motion } from "framer-motion"
 import RulesNav from "@/components/RulesNav"
 import RulesContent from "@/components/RulesContent"
 import StarWarsHero from "@/components/StarWarsHero"
@@ -16,7 +14,7 @@ export default function Index() {
   }
 
   const handleEnter = () => {
-    setActivePage("general")
+    setActivePage("charter")
     setActiveSubpage(null)
     setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 50)
   }
