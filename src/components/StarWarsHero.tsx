@@ -4,66 +4,78 @@ interface StarWarsHeroProps {
   onEnter: () => void
 }
 
-// Знак Республики (Galactic Republic crest) в SVG
+// Знак Галактической Республики (точный символ)
 function RepublicCrest({ size = 28 }: { size?: number }) {
+  const C = "#00cccc"
+  // Параметры
+  const cx = 50, cy = 50
+  const rOuter = 47   // внешнее кольцо
+  const rInner = 34   // внутреннее кольцо (граница сегментов)
+  const rHub = 12     // центральная втулка
+  const spokeW = 6    // ширина спицы (strokeWidth)
+  const segCount = 9  // количество сегментов во внешнем кольце
+  const segGap = 14   // угол зазора между сегментами в градусах
+
+  // Сегменты внешнего кольца: 9 штук с зазорами
+  const segAngle = 360 / segCount
+  const segments = Array.from({ length: segCount }).map((_, i) => {
+    const startDeg = i * segAngle + segGap / 2 - 90
+    const endDeg = (i + 1) * segAngle - segGap / 2 - 90
+    const startRad = (startDeg * Math.PI) / 180
+    const endRad = (endDeg * Math.PI) / 180
+    const rMid = (rOuter + rInner) / 2
+    const thickness = (rOuter - rInner) / 2
+    return (
+      <path
+        key={i}
+        d={describeArc(cx, cy, rMid, startDeg, endDeg)}
+        stroke={C}
+        strokeWidth={thickness * 2}
+        fill="none"
+        strokeLinecap="butt"
+      />
+    )
+  })
+
+  // 9 спиц от втулки до внутреннего кольца
+  const spokes = Array.from({ length: segCount }).map((_, i) => {
+    const angleDeg = i * segAngle - 90
+    const rad = (angleDeg * Math.PI) / 180
+    const x1 = cx + rHub * Math.cos(rad)
+    const y1 = cy + rHub * Math.sin(rad)
+    const x2 = cx + rInner * Math.cos(rad)
+    const y2 = cy + rInner * Math.sin(rad)
+    return (
+      <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={C} strokeWidth={spokeW} strokeLinecap="round" />
+    )
+  })
+
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 100 100"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* Outer ring */}
-      <circle cx="50" cy="50" r="46" stroke="#00cccc" strokeWidth="4" fill="none" />
-      {/* Inner ring */}
-      <circle cx="50" cy="50" r="32" stroke="#00cccc" strokeWidth="2.5" fill="none" />
-      {/* Center dot */}
-      <circle cx="50" cy="50" r="7" fill="#00cccc" />
-      {/* 8 spokes */}
-      {Array.from({ length: 8 }).map((_, i) => {
-        const angle = (i * 360) / 8
-        const rad = (angle * Math.PI) / 180
-        const x1 = 50 + 32 * Math.cos(rad)
-        const y1 = 50 + 32 * Math.sin(rad)
-        const x2 = 50 + 46 * Math.cos(rad)
-        const y2 = 50 + 46 * Math.sin(rad)
-        return (
-          <line
-            key={i}
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            stroke="#00cccc"
-            strokeWidth="3"
-          />
-        )
-      })}
-      {/* 8 inner spokes to center */}
-      {Array.from({ length: 8 }).map((_, i) => {
-        const angle = (i * 360) / 8 + 22.5
-        const rad = (angle * Math.PI) / 180
-        const x1 = 50 + 7 * Math.cos(rad)
-        const y1 = 50 + 7 * Math.sin(rad)
-        const x2 = 50 + 28 * Math.cos(rad)
-        const y2 = 50 + 28 * Math.sin(rad)
-        return (
-          <line
-            key={i}
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            stroke="#00cccc"
-            strokeWidth="2"
-            opacity="0.6"
-          />
-        )
-      })}
+    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Outer circle */}
+      <circle cx={cx} cy={cy} r={rOuter} stroke={C} strokeWidth="3" fill="none" />
+      {/* Inner circle */}
+      <circle cx={cx} cy={cy} r={rInner} stroke={C} strokeWidth="2" fill="none" />
+      {/* Segments */}
+      {segments}
+      {/* Spokes */}
+      {spokes}
+      {/* Center hub */}
+      <circle cx={cx} cy={cy} r={rHub} fill={C} />
     </svg>
   )
 }
+
+function describeArc(cx: number, cy: number, r: number, startDeg: number, endDeg: number) {
+  const toRad = (d: number) => (d * Math.PI) / 180
+  const x1 = cx + r * Math.cos(toRad(startDeg))
+  const y1 = cy + r * Math.sin(toRad(startDeg))
+  const x2 = cx + r * Math.cos(toRad(endDeg))
+  const y2 = cy + r * Math.sin(toRad(endDeg))
+  const large = endDeg - startDeg > 180 ? 1 : 0
+  return `M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2}`
+}
+
 
 export default function StarWarsHero({ onEnter }: StarWarsHeroProps) {
   return (
