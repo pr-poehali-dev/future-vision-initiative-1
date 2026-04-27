@@ -204,6 +204,13 @@ export default function StarWarsHero({ onEnter }: StarWarsHeroProps) {
         </motion.div>
 
       </div>
+
+      {/* Watermark */}
+      <div className="absolute bottom-4 left-0 right-0 flex justify-center px-4 z-10">
+        <p className="text-center text-xs text-white/20 tracking-wide max-w-lg">
+          Данная информация, предоставленная на сайте, является собственностью Sunrise Team. Копирование любых данных строго запрещено.
+        </p>
+      </div>
     </div>
   )
 }
