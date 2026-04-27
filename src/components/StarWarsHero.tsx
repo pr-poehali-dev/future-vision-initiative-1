@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import { LiquidButton } from "@/components/ui/liquid-glass-button"
+import { TextGradientScroll } from "@/components/ui/text-gradient-scroll"
 
 interface StarWarsHeroProps {
   onEnter: () => void
